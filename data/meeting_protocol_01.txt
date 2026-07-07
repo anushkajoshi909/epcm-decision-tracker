@@ -1,0 +1,9 @@
+Project: PROJECT_ALPHA
+Meeting: Weekly MEP Coordination
+Date: 2026-09-01
+
+During today's coordination meeting, the HVAC layout was changed because of a new
+ceiling requirement. Electrical must review the cable routing based on the new
+HVAC layout. Updated drawings are required before 15 September. No responsible
+person has currently been assigned for the electrical review. Construction
+Package EL-04 depends on this clarification.

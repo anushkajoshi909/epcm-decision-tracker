@@ -1,0 +1,10 @@
+Project: PROJECT_ALPHA
+Meeting: Plumbing / Structural Interface Review
+Date: 2026-09-02
+
+It was decided to reroute the plumbing risers on level 3 because the structural
+beam position changed in the latest steel drawings. Maria Novak will update the
+structural drawings, but the plumbing riser diagram (PL-03) cannot be finalized
+until the new beam position is confirmed. No deadline has been agreed yet for
+this confirmation. This affects the Plumbing discipline directly and the
+Structural discipline indirectly.

@@ -1,0 +1,10 @@
+Project: PROJECT_ALPHA
+Meeting: Fire Safety Coordination
+Date: 2026-09-03
+
+The fire safety concept (FS-05) required an update after the architect changed
+the escape route layout on level 2. Julia Wenzel was assigned to revise the
+fire safety concept by 20 August. The revised concept is still outstanding and
+was not received during this meeting. Structural design (ST-01) is already
+closed, but the escape route change may require re-checking the structural
+openings, which has not been confirmed by anyone.
