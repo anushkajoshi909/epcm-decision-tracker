@@ -1,0 +1,122 @@
+[
+  {
+    "id": "TC01_clean_case",
+    "project_id": "PROJECT_ALPHA",
+    "text": "The facade cladding detail was revised after the architect's comment. Anna Keller will update the facade shop drawings by 2026-09-20. This affects the Facade discipline.",
+    "expected": {
+      "decision_detected": true,
+      "action_detected": true,
+      "owner": "Anna Keller",
+      "deadline": "2026-09-20",
+      "affected_deliverable": null,
+      "missing_owner": false,
+      "unresolved_dependency": false,
+      "requires_attention": false
+    }
+  },
+  {
+    "id": "TC02_missing_owner",
+    "project_id": "PROJECT_ALPHA",
+    "text": "The HVAC layout was changed because of a new ceiling requirement. Electrical must review the cable routing based on the new HVAC layout. Updated drawings are required before 2026-09-15. No responsible person has currently been assigned for the electrical review. Construction Package EL-04 depends on this clarification.",
+    "expected": {
+      "decision_detected": true,
+      "action_detected": true,
+      "owner": null,
+      "deadline": "2026-09-15",
+      "affected_deliverable": "EL-04",
+      "missing_owner": true,
+      "unresolved_dependency": false,
+      "requires_attention": true
+    }
+  },
+  {
+    "id": "TC03_missing_deadline",
+    "project_id": "PROJECT_ALPHA",
+    "text": "It was decided to reroute the plumbing risers on level 3 because the structural beam position changed. Maria Novak will update the structural drawings. No deadline has been agreed yet for this update.",
+    "expected": {
+      "decision_detected": true,
+      "action_detected": true,
+      "owner": "Maria Novak",
+      "deadline": null,
+      "affected_deliverable": null,
+      "missing_owner": false,
+      "unresolved_dependency": false,
+      "requires_attention": true
+    }
+  },
+  {
+    "id": "TC04_deadline_already_passed",
+    "project_id": "PROJECT_ALPHA",
+    "text": "Julia Wenzel was assigned to revise the fire safety concept by 2026-08-20 after the escape route layout changed. The revised concept is still outstanding.",
+    "expected": {
+      "decision_detected": true,
+      "action_detected": true,
+      "owner": "Julia Wenzel",
+      "deadline": "2026-08-20",
+      "affected_deliverable": null,
+      "missing_owner": false,
+      "unresolved_dependency": false,
+      "requires_attention": true
+    }
+  },
+  {
+    "id": "TC05_unresolved_dependency",
+    "project_id": "PROJECT_ALPHA",
+    "text": "The plumbing riser diagram PL-03 cannot be finalized until the new structural beam position is confirmed. Structural still needs to confirm the beam position.",
+    "expected": {
+      "decision_detected": false,
+      "action_detected": true,
+      "owner": null,
+      "deadline": null,
+      "affected_deliverable": "PL-03",
+      "missing_owner": true,
+      "unresolved_dependency": true,
+      "requires_attention": true
+    }
+  },
+  {
+    "id": "TC06_unknown_deliverable",
+    "project_id": "PROJECT_ALPHA",
+    "text": "Peter Braun will update drawing package MEP-99 by 2026-09-30 following the coordination clash review.",
+    "expected": {
+      "decision_detected": false,
+      "action_detected": true,
+      "owner": "Peter Braun",
+      "deadline": "2026-09-30",
+      "affected_deliverable": "MEP-99",
+      "missing_owner": false,
+      "unresolved_dependency": false,
+      "requires_attention": true
+    }
+  },
+  {
+    "id": "TC07_multi_discipline_decision",
+    "project_id": "PROJECT_ALPHA",
+    "text": "The ceiling height was reduced in the east wing, affecting both HVAC and Electrical. Peter Braun will issue the revised HVAC layout by 2026-09-12.",
+    "expected": {
+      "decision_detected": true,
+      "action_detected": true,
+      "owner": "Peter Braun",
+      "deadline": "2026-09-12",
+      "affected_deliverable": null,
+      "missing_owner": false,
+      "unresolved_dependency": false,
+      "requires_attention": false
+    }
+  },
+  {
+    "id": "TC08_closed_deliverable_reopened",
+    "project_id": "PROJECT_ALPHA",
+    "text": "The escape route change may require re-checking the structural openings in ST-01, which has not been confirmed by anyone.",
+    "expected": {
+      "decision_detected": false,
+      "action_detected": true,
+      "owner": null,
+      "deadline": null,
+      "affected_deliverable": "ST-01",
+      "missing_owner": true,
+      "unresolved_dependency": false,
+      "requires_attention": true
+    }
+  }
+]
