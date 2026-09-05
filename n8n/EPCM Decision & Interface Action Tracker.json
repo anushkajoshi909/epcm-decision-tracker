@@ -8,31 +8,32 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "webhook-node",
+      "id": "e7da1d10-ac90-46ee-931b-04830ba1e3f7",
       "name": "Webhook - Receive Protocol",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        240,
-        300
-      ]
+        -1008,
+        432
+      ],
+      "webhookId": "d5602ab3-ea93-43a4-88da-0cb6aaf5d874"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "http://localhost:8000/analyse-protocol",
+        "url": "http://127.0.0.1:8000/analyse-protocol",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($json.body) }}",
         "options": {}
       },
-      "id": "http-request-node",
-      "name": "Call FastAPI /analyse-protocol",
+      "id": "c92ae053-3ba2-4bac-881b-47eab0abc1f7",
+      "name": "Call FastAPI /analyse-protocol1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        460,
-        300
+        -800,
+        432
       ]
     },
     {
@@ -41,7 +42,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -58,26 +60,26 @@
         },
         "options": {}
       },
-      "id": "if-node",
-      "name": "IF requires_attention",
+      "id": "8f9afe7d-4740-43c5-8cb3-9e24b03187e7",
+      "name": "IF requires_attention1",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        680,
-        300
+        -576,
+        432
       ]
     },
     {
       "parameters": {
         "jsCode": "// Build a simple warning message from the FastAPI response.\n// In a real deployment this is where a Teams/Slack/email node would go.\nconst data = $input.first().json;\nconst issueLines = (data.issues || [])\n  .map((i) => `- [${i.severity.toUpperCase()}] ${i.type}: ${i.message}`)\n  .join('\\n');\n\nconst warning = `WARNING - project ${data.project_id} needs attention:\\n${issueLines}`;\nconsole.log(warning);\n\nreturn [{ json: { ...data, warning } }];"
       },
-      "id": "code-node",
-      "name": "Create Warning (log)",
+      "id": "2d6fc939-409e-4a1b-aed3-d1e9b49d9520",
+      "name": "Create Warning (log)1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        900,
-        200
+        -352,
+        320
       ]
     },
     {
@@ -85,62 +87,92 @@
         "respondWith": "allIncomingItems",
         "options": {}
       },
-      "id": "respond-node",
-      "name": "Respond to Webhook",
+      "id": "63d40a4e-d31a-4812-8c10-287295f7ba9f",
+      "name": "Respond to Webhook1",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1120,
-        300
+        -128,
+        432
       ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/REDACTED/REDACTED",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.warning) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        96,
+        432
+      ],
+      "id": "63b78373-4d88-4520-8c7a-7b5409b56dac",
+      "name": "HTTP Request"
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook - Receive Protocol": {
       "main": [
         [
           {
-            "node": "Call FastAPI /analyse-protocol",
+            "node": "Call FastAPI /analyse-protocol1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Call FastAPI /analyse-protocol": {
+    "Call FastAPI /analyse-protocol1": {
       "main": [
         [
           {
-            "node": "IF requires_attention",
+            "node": "IF requires_attention1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF requires_attention": {
+    "IF requires_attention1": {
       "main": [
         [
           {
-            "node": "Create Warning (log)",
+            "node": "Create Warning (log)1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Respond to Webhook1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create Warning (log)": {
+    "Create Warning (log)1": {
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -150,6 +182,14 @@
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1"
-  }
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "cea8f6ed-7db2-4307-8332-def2113c747c",
+  "meta": {
+    "instanceId": "36fc684f90965e40d2fd80709d4bf2ee9546f089dbf61fd6bac171aa3f8215b9"
+  },
+  "nodeGroups": [],
+  "id": "Uyz8mutMXQpY00wq",
+  "tags": []
 }
