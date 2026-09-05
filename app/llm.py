@@ -10,6 +10,7 @@ semantic tasks" for the full rationale.
 import json
 import os
 from datetime import date
+from pathlib import Path
 
 from openai import OpenAI
 from pydantic import ValidationError
@@ -19,19 +20,28 @@ from .models import LLMExtraction
 _client: OpenAI | None = None
 
 
+def _read_scadsai_key() -> str:
+    return (Path.home() / ".scadsai-api-key").read_text().splitlines()[0].strip()
+
+
 def get_client() -> OpenAI:
     """Lazy singleton so importing this module doesn't require env vars to
-    already be set (useful for tests that don't touch the LLM)."""
+    already be set (useful for tests that don't touch the LLM).
+
+    Defaults to the SCADS.AI endpoint, reading the key from
+    ~/.scadsai-api-key. Set LLM_BASE_URL / LLM_API_KEY to point at a
+    different OpenAI-compatible endpoint instead.
+    """
     global _client
     if _client is None:
         _client = OpenAI(
-            base_url=os.getenv("LLM_BASE_URL"),
-            api_key=os.getenv("LLM_API_KEY", "not-set"),
+            base_url=os.getenv("LLM_BASE_URL", "https://llm.scads.ai/v1"),
+            api_key=os.getenv("LLM_API_KEY") or _read_scadsai_key(),
         )
     return _client
 
 
-MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+MODEL = os.getenv("LLM_MODEL", "meta-llama/Llama-3.3-70B-Instruct")
 
 SYSTEM_PROMPT_TEMPLATE = """You are an assistant that reads EPCM (Engineering, \
 Procurement, Construction Management) meeting protocols and extracts \

@@ -85,8 +85,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 cp .env.example .env
-# edit .env: set LLM_BASE_URL / LLM_API_KEY / LLM_MODEL for your
-# university's LLM API (anything OpenAI-compatible works)
+# defaults to the SCADS.AI endpoint, reading the key from
+# ~/.scadsai-api-key. To use a different OpenAI-compatible endpoint
+# instead, edit .env: set LLM_BASE_URL / LLM_API_KEY / LLM_MODEL
 
 uvicorn app.main:app --reload
 ```
