@@ -8,7 +8,11 @@ n8n's HTTP Request node doing the same thing).
 Usage:
     uvicorn app.main:app --reload &      # from the project root, in another shell
     python eval/run_eval.py
+    python eval/run_eval.py --verbose    # also print each case's input text,
+                                          # expected values, and the full
+                                          # actual API/LLM response
 """
+import argparse
 import json
 import os
 from pathlib import Path
@@ -57,7 +61,17 @@ def run_case(case: dict) -> dict:
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="print each case's input text, expected values, and the full actual response",
+    )
+    args = parser.parse_args()
+
     cases = json.loads(TEST_CASES_PATH.read_text())
+    cases_by_id = {c["id"]: c for c in cases}
     results = []
     for case in cases:
         try:
@@ -72,6 +86,16 @@ def main():
         passed = sum(r["checks"].values())
         total = len(r["checks"])
         print(f"\n{r['id']}: {passed}/{total} fields correct")
+
+        if args.verbose:
+            case = cases_by_id[r["id"]]
+            print(f"  --- input text ---\n  {case['text']}")
+            print(f"  --- expected ---\n  {json.dumps(case['expected'], indent=2)}")
+            print(
+                "  --- actual response (LLM extraction + rule-based issues) ---\n  "
+                + json.dumps(r["actual"], indent=2).replace("\n", "\n  ")
+            )
+
         for field, ok in r["checks"].items():
             field_totals.setdefault(field, []).append(ok)
             mark = "OK" if ok else "MISMATCH"
@@ -84,7 +108,6 @@ def main():
 
     # requires_attention treated as a binary classifier -> precision/recall
     tp = fp = fn = tn = 0
-    cases_by_id = {c["id"]: c for c in cases}
     for r in results:
         expected_attention = cases_by_id[r["id"]]["expected"]["requires_attention"]
         actual_attention = r["actual"]["requires_attention"]

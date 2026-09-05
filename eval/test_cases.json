@@ -18,6 +18,7 @@
     "id": "TC02_missing_owner",
     "project_id": "PROJECT_ALPHA",
     "text": "The HVAC layout was changed because of a new ceiling requirement. Electrical must review the cable routing based on the new HVAC layout. Updated drawings are required before 2026-09-15. No responsible person has currently been assigned for the electrical review. Construction Package EL-04 depends on this clarification.",
+    "registry_note": "data/deliverables.csv row for EL-04 has an EMPTY owner field, so rules.py's registry fallback cannot resolve one either -> missing_owner stays true.",
     "expected": {
       "decision_detected": true,
       "action_detected": true,
@@ -63,6 +64,7 @@
     "id": "TC05_unresolved_dependency",
     "project_id": "PROJECT_ALPHA",
     "text": "The plumbing riser diagram PL-03 cannot be finalized until the new structural beam position is confirmed. Structural still needs to confirm the beam position.",
+    "registry_note": "data/deliverables.csv row for PL-03 has an EMPTY owner field, so rules.py's registry fallback cannot resolve one either -> missing_owner stays true.",
     "expected": {
       "decision_detected": false,
       "action_detected": true,
@@ -78,6 +80,7 @@
     "id": "TC06_unknown_deliverable",
     "project_id": "PROJECT_ALPHA",
     "text": "Peter Braun will update drawing package MEP-99 by 2026-09-30 following the coordination clash review.",
+    "registry_note": "MEP-99 does NOT exist in data/deliverables.csv, so the registry fallback finds nothing -> owner comes purely from the text ('Peter Braun'), and separately triggers an 'unknown_deliverable' issue (not checked by this eval script).",
     "expected": {
       "decision_detected": false,
       "action_detected": true,
@@ -108,13 +111,14 @@
     "id": "TC08_closed_deliverable_reopened",
     "project_id": "PROJECT_ALPHA",
     "text": "The escape route change may require re-checking the structural openings in ST-01, which has not been confirmed by anyone.",
+    "registry_note": "data/deliverables.csv row for ST-01 HAS an owner on record ('Maria Novak'), so rules.py's registry fallback resolves an effective owner even though the protocol text itself names no one -> missing_owner is false. requires_attention still ends up true because of the separate 'coordination_issue' rule (ST-01's status is Closed but it's referenced again) and 'missing_deadline'.",
     "expected": {
       "decision_detected": false,
       "action_detected": true,
       "owner": null,
       "deadline": null,
       "affected_deliverable": "ST-01",
-      "missing_owner": true,
+      "missing_owner": false,
       "unresolved_dependency": false,
       "requires_attention": true
     }
