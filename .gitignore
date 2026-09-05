@@ -3,3 +3,7 @@ __pycache__/
 .venv/
 venv/
 .env
+
+# Personal n8n exports (may contain real webhook URLs/tokens) - the
+# checked-in template lives at n8n/epcm_workflow.json instead.
+n8n/EPCM Decision & Interface Action Tracker.json

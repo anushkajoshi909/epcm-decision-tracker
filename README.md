@@ -150,10 +150,19 @@ curl -i http://127.0.0.1:8000/deliverables/DOES-NOT-EXIST   # -> 404
 
 ## 5. n8n workflow
 
-See [`n8n/README.md`](n8n/README.md). Five nodes: **Webhook → HTTP Request →
-IF → Code (log warning) → Respond to Webhook**. n8n does no business logic
-itself — it only routes based on the `requires_attention` boolean that
-FastAPI already computed.
+See [`n8n/README.md`](n8n/README.md). Six nodes: **Webhook → HTTP Request →
+IF → Code (log warning) → Respond to Webhook → Notify Discord**. n8n does no
+business logic itself — it only routes based on the `requires_attention`
+boolean that FastAPI already computed, and posts the warning to a Discord
+channel when true.
+
+The Discord node reads its webhook URL from `{{ $env.DISCORD_WEBHOOK_URL }}`
+rather than a hardcoded value, so the real URL only ever lives in an
+environment variable on whichever machine runs n8n — see `RUNBOOK.md` for
+how to set it. Never paste a real webhook/API URL directly into a workflow
+JSON that gets committed: if that ever happens, the fix is to revoke the
+credential (e.g. delete and recreate the Discord webhook) immediately,
+since removing it from git afterward doesn't undo a public exposure.
 
 ---
 

@@ -30,6 +30,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 nvm use 24
 export N8N_SECURE_COOKIE=false
+export DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/YOUR_ID/YOUR_TOKEN"
 npx --cache /tmp/npm-cache-fresh n8n
 ```
 
@@ -37,6 +38,14 @@ npx --cache /tmp/npm-cache-fresh n8n
   session-only switch doesn't touch your default Node 20 anywhere else.
 - `N8N_SECURE_COOKIE=false` - avoids a Safari-specific cookie error on plain
   `http://localhost`.
+- `DISCORD_WEBHOOK_URL` - the real Discord webhook URL for the "Notify
+  Discord" node at the end of the workflow. Set to your actual webhook URL
+  (from Discord: channel settings -> Integrations -> Webhooks). Never commit
+  the real value anywhere - the checked-in workflow only references
+  `{{ $env.DISCORD_WEBHOOK_URL }}`, never the literal URL. If this ever gets
+  hardcoded into an exported JSON and pushed by accident, revoke that
+  webhook in Discord immediately and create a new one - removing it from
+  git afterward does not undo the exposure.
 - `--cache /tmp/npm-cache-fresh` - routes around a broken permission on your
   default global npm cache (root-owned files from a past `sudo npm`). To fix
   that properly instead: `sudo chown -R 501:20 "/Users/anushkajoshi/.npm"`,

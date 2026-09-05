@@ -28,7 +28,7 @@
         "options": {}
       },
       "id": "c92ae053-3ba2-4bac-881b-47eab0abc1f7",
-      "name": "Call FastAPI /analyse-protocol1",
+      "name": "Call FastAPI /analyse-protocol",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -61,7 +61,7 @@
         "options": {}
       },
       "id": "8f9afe7d-4740-43c5-8cb3-9e24b03187e7",
-      "name": "IF requires_attention1",
+      "name": "IF requires_attention",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
@@ -71,10 +71,10 @@
     },
     {
       "parameters": {
-        "jsCode": "// Build a simple warning message from the FastAPI response.\n// In a real deployment this is where a Teams/Slack/email node would go.\nconst data = $input.first().json;\nconst issueLines = (data.issues || [])\n  .map((i) => `- [${i.severity.toUpperCase()}] ${i.type}: ${i.message}`)\n  .join('\\n');\n\nconst warning = `WARNING - project ${data.project_id} needs attention:\\n${issueLines}`;\nconsole.log(warning);\n\nreturn [{ json: { ...data, warning } }];"
+        "jsCode": "// Build a simple warning message from the FastAPI response.\nconst data = $input.first().json;\nconst issueLines = (data.issues || [])\n  .map((i) => `- [${i.severity.toUpperCase()}] ${i.type}: ${i.message}`)\n  .join('\\n');\n\nconst warning = `WARNING - project ${data.project_id} needs attention:\\n${issueLines}`;\nconsole.log(warning);\n\nreturn [{ json: { ...data, warning } }];"
       },
       "id": "2d6fc939-409e-4a1b-aed3-d1e9b49d9520",
-      "name": "Create Warning (log)1",
+      "name": "Create Warning (log)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -88,7 +88,7 @@
         "options": {}
       },
       "id": "63d40a4e-d31a-4812-8c10-287295f7ba9f",
-      "name": "Respond to Webhook1",
+      "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
@@ -99,7 +99,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://discord.com/api/webhooks/REDACTED/REDACTED",
+        "url": "={{ $env.DISCORD_WEBHOOK_URL }}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.warning) }}\n}",
@@ -112,7 +112,7 @@
         432
       ],
       "id": "63b78373-4d88-4520-8c7a-7b5409b56dac",
-      "name": "HTTP Request"
+      "name": "Notify Discord"
     }
   ],
   "pinData": {},
@@ -121,58 +121,58 @@
       "main": [
         [
           {
-            "node": "Call FastAPI /analyse-protocol1",
+            "node": "Call FastAPI /analyse-protocol",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Call FastAPI /analyse-protocol1": {
+    "Call FastAPI /analyse-protocol": {
       "main": [
         [
           {
-            "node": "IF requires_attention1",
+            "node": "IF requires_attention",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF requires_attention1": {
+    "IF requires_attention": {
       "main": [
         [
           {
-            "node": "Create Warning (log)1",
+            "node": "Create Warning (log)",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Respond to Webhook1",
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create Warning (log)1": {
+    "Create Warning (log)": {
       "main": [
         [
           {
-            "node": "Respond to Webhook1",
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Respond to Webhook1": {
+    "Respond to Webhook": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Notify Discord",
             "type": "main",
             "index": 0
           }
@@ -185,11 +185,6 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "cea8f6ed-7db2-4307-8332-def2113c747c",
-  "meta": {
-    "instanceId": "36fc684f90965e40d2fd80709d4bf2ee9546f089dbf61fd6bac171aa3f8215b9"
-  },
   "nodeGroups": [],
-  "id": "Uyz8mutMXQpY00wq",
   "tags": []
 }
