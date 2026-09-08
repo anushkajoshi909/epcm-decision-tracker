@@ -14,6 +14,11 @@ dependency is easy to lose track of.
 All data in `data/` is synthetic. No real Drees & Sommer information is used
 anywhere in this repository.
 
+**[pipeline-blueprint.html](pipeline-blueprint.html)** is a single-file,
+color-coded diagram of the full pipeline (open it directly in any browser,
+no server needed) — built as a quick visual reference for walking through
+the architecture out loud.
+
 ---
 
 ## 1. Architecture

@@ -1,0 +1,444 @@
+<title>EPCM Pipeline Blueprint</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  :root {
+    --bg: #F5F2EA;
+    --surface: #FFFFFF;
+    --surface-2: #FBF8F1;
+    --ink: #202B33;
+    --ink-muted: #5A6670;
+    --line: #C7CCD1;
+    --accent-line: #43505A;
+    --llm: #A15A1E;
+    --llm-tint: #F3E2CC;
+    --rules: #2C5D86;
+    --rules-tint: #DCE7EF;
+    --shadow: 0 1px 2px rgba(32,43,51,0.06), 0 8px 20px -12px rgba(32,43,51,0.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12181D;
+      --surface: #1A2126;
+      --surface-2: #1F272D;
+      --ink: #ECE8DE;
+      --ink-muted: #9BA6AD;
+      --line: #333E46;
+      --accent-line: #89949C;
+      --llm: #D68B3E;
+      --llm-tint: #2E2415;
+      --rules: #6FA6D6;
+      --rules-tint: #16232C;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px -14px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12181D;
+    --surface: #1A2126;
+    --surface-2: #1F272D;
+    --ink: #ECE8DE;
+    --ink-muted: #9BA6AD;
+    --line: #333E46;
+    --accent-line: #89949C;
+    --llm: #D68B3E;
+    --llm-tint: #2E2415;
+    --rules: #6FA6D6;
+    --rules-tint: #16232C;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px -14px rgba(0,0,0,0.55);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 56px 28px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, 'SF Mono', Consolas, monospace; }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  header.hero { display: flex; flex-direction: column; gap: 14px; }
+  h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .subtitle {
+    max-width: 62ch;
+    color: var(--ink-muted);
+    font-size: 17px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    width: fit-content;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink); }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  .swatch.llm { background: var(--llm); }
+  .swatch.rules { background: var(--rules); }
+  .swatch.orc { background: transparent; border: 2px solid var(--accent-line); }
+
+  figure.diagram {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  figure.diagram svg { display: block; width: 100%; height: auto; min-width: 780px; color: var(--accent-line); }
+  figcaption {
+    padding: 14px 6px 4px;
+    font-size: 14.5px;
+    color: var(--ink-muted);
+  }
+
+  .callout {
+    display: grid;
+    grid-template-columns: 4px 1fr;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .callout .bar {
+    background: linear-gradient(180deg, var(--llm) 50%, var(--rules) 50%);
+  }
+  .callout .body { padding: 22px 26px; display: flex; flex-direction: column; gap: 10px; }
+  .callout p { margin: 0; }
+  .callout .rule-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .callout strong.llm-word { color: var(--llm); }
+  .callout strong.rules-word { color: var(--rules); }
+
+  section.block { display: flex; flex-direction: column; gap: 14px; }
+  h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14.5px; }
+  thead th {
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.step { font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; white-space: nowrap; }
+  td.code { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge.llm { background: var(--llm-tint); color: var(--llm); }
+  .badge.rules { background: var(--rules-tint); color: var(--rules); }
+  .badge.orc { background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line); }
+
+  .pitch {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 30px;
+    position: relative;
+  }
+  .pitch::before {
+    content: "\201C";
+    position: absolute;
+    top: 6px;
+    left: 18px;
+    font-family: Georgia, serif;
+    font-size: 64px;
+    color: var(--line);
+    line-height: 1;
+  }
+  .pitch p { margin: 0 0 14px 0; font-size: 16.5px; position: relative; z-index: 1; }
+  .pitch p:last-child { margin-bottom: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    header.hero { animation: rise 0.4s ease-out; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <span class="eyebrow">Architecture Reference — Interview Walkthrough</span>
+    <h1>Meeting Protocol → Warning</h1>
+    <p class="subtitle">The full request path through the EPCM Decision &amp; Interface Action Tracker, drawn so the boundary between <strong>LLM interpretation</strong> and <strong>deterministic Python</strong> is the first thing a reader sees — not a detail buried in prose.</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><span class="swatch llm"></span>Semantic — LLM</div>
+    <div class="legend-item"><span class="swatch rules"></span>Deterministic — Python rules</div>
+    <div class="legend-item"><span class="swatch orc"></span>Orchestration &amp; data — n8n / FastAPI / JSON</div>
+  </div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 1160 500" role="img" aria-label="Pipeline diagram: a meeting protocol enters through an n8n webhook, is passed to FastAPI, sent to an LLM for structured extraction, validated against a Pydantic schema with a retry loop on failure, run through a deterministic rules engine that also cross-checks a deliverables registry, returned as one JSON response, then n8n branches on requires_attention — true posts a Discord notification, false skips straight to responding — and both paths converge on a single Respond to Webhook step that returns 200 JSON to the caller.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+        </marker>
+      </defs>
+
+      <!-- Row 1 connectors -->
+      <line x1="170" y1="115" x2="204" y2="115" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <line x1="360" y1="115" x2="394" y2="115" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <line x1="610" y1="115" x2="644" y2="115" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <line x1="870" y1="115" x2="904" y2="115" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+
+      <!-- retry arc: validation -> back to LLM -->
+      <path d="M 1000,70 C 1000,18 765,18 765,64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow)" opacity="0.85" />
+      <text x="882" y="30" text-anchor="middle" font-size="11" class="mono" fill="currentColor" opacity="0.85">invalid JSON → retry (≤2 attempts)</text>
+
+      <!-- vertical connector row1 -> row2 -->
+      <line x1="1005" y1="160" x2="1005" y2="254" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+
+      <!-- Row 2 connectors (right to left) -->
+      <line x1="910" y1="305" x2="876" y2="305" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <line x1="650" y1="305" x2="616" y2="305" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <line x1="400" y1="305" x2="366" y2="305" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <text x="383" y="298" text-anchor="middle" font-size="11" class="mono" fill="currentColor" opacity="0.85">true</text>
+
+      <!-- IF false -> down to Respond -->
+      <line x1="505" y1="350" x2="505" y2="394" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <text x="519" y="376" text-anchor="start" font-size="11" class="mono" fill="currentColor" opacity="0.85">false</text>
+
+      <!-- Notify -> down to Respond -->
+      <line x1="265" y1="350" x2="265" y2="394" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+
+      <!-- exit stub -->
+      <line x1="540" y1="440" x2="600" y2="440" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)" />
+      <text x="570" y="428" text-anchor="middle" font-size="11" class="mono" fill="currentColor" opacity="0.85">200 · JSON</text>
+
+      <!-- arrow labels -->
+      <text x="187" y="105" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" opacity="0.75">POST</text>
+      <text x="377" y="105" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" opacity="0.75">HTTP call</text>
+      <text x="627" y="105" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" opacity="0.75">prompt+schema</text>
+      <text x="887" y="105" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" opacity="0.75">raw JSON</text>
+      <text x="893" y="295" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" opacity="0.75">validated</text>
+      <text x="633" y="295" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" opacity="0.75">issues[]</text>
+
+      <!-- Node 1: Meeting Protocol (document shape) -->
+      <path d="M 20,70 L 148,70 L 170,92 L 170,160 L 20,160 Z" fill="var(--surface-2)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <path d="M 148,70 L 148,92 L 170,92 Z" fill="none" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="95" y="112" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Meeting</text>
+      <text x="95" y="128" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Protocol</text>
+      <text x="95" y="146" text-anchor="middle" font-size="11" class="mono" fill="var(--ink-muted)">raw text input</text>
+
+      <!-- Node 2: n8n Webhook -->
+      <rect x="210" y="70" width="150" height="90" rx="8" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="285" y="112" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">n8n</text>
+      <text x="285" y="128" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Webhook</text>
+      <text x="285" y="146" text-anchor="middle" font-size="11" class="mono" fill="var(--ink-muted)">receives POST</text>
+
+      <!-- Node 3: FastAPI -->
+      <rect x="400" y="70" width="210" height="90" rx="8" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="505" y="112" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">FastAPI</text>
+      <text x="505" y="130" text-anchor="middle" font-size="12" class="mono" fill="var(--ink)">POST /analyse-protocol</text>
+      <text x="505" y="146" text-anchor="middle" font-size="11" class="mono" fill="var(--ink-muted)">400 if text is blank</text>
+
+      <!-- Node 4: LLM Extraction -->
+      <rect x="650" y="70" width="220" height="90" rx="8" fill="var(--llm-tint)" stroke="var(--llm)" stroke-width="2" />
+      <text x="760" y="112" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">LLM Extraction</text>
+      <text x="760" y="130" text-anchor="middle" font-size="12" class="mono" fill="var(--ink)">decisions · actions</text>
+      <text x="760" y="146" text-anchor="middle" font-size="11" class="mono" fill="var(--ink-muted)">SCADS.AI · Llama-3.3-70B</text>
+
+      <!-- Node 5: Pydantic Validation -->
+      <rect x="910" y="70" width="190" height="90" rx="8" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="1005" y="112" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Pydantic</text>
+      <text x="1005" y="130" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Validate</text>
+      <text x="1005" y="146" text-anchor="middle" font-size="11" class="mono" fill="var(--ink-muted)">LLMExtraction schema</text>
+
+      <!-- Node 6: Rules Engine -->
+      <rect x="910" y="260" width="190" height="90" rx="8" fill="var(--rules-tint)" stroke="var(--rules)" stroke-width="2" />
+      <text x="1005" y="298" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Rules Engine</text>
+      <text x="1005" y="314" text-anchor="middle" font-size="11" class="mono" fill="var(--ink)">rules.py — pure Python</text>
+      <text x="1005" y="330" text-anchor="middle" font-size="10.5" class="mono" fill="var(--ink-muted)">+ cross-checks deliverables.csv</text>
+
+      <!-- Node 7: JSON Response -->
+      <rect x="650" y="260" width="220" height="90" rx="8" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="760" y="298" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">JSON Response</text>
+      <text x="760" y="314" text-anchor="middle" font-size="11" class="mono" fill="var(--ink)">issues[] · requires_attention</text>
+      <text x="760" y="330" text-anchor="middle" font-size="10.5" class="mono" fill="var(--ink-muted)">AnalyseResponse</text>
+
+      <!-- Node 8: n8n IF -->
+      <rect x="400" y="260" width="210" height="90" rx="8" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="1.6" stroke-dasharray="5 4" />
+      <text x="505" y="298" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">n8n: IF</text>
+      <text x="505" y="314" text-anchor="middle" font-size="11.5" class="mono" fill="var(--ink)">requires_attention?</text>
+      <text x="505" y="330" text-anchor="middle" font-size="10.5" class="mono" fill="var(--ink-muted)">routes, decides nothing</text>
+
+      <!-- Node 9: Notify -->
+      <rect x="170" y="260" width="190" height="90" rx="8" fill="var(--surface)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="265" y="298" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Log + Notify</text>
+      <text x="265" y="314" text-anchor="middle" font-size="11" class="mono" fill="var(--ink)">Code node → Discord</text>
+      <text x="265" y="330" text-anchor="middle" font-size="10.5" class="mono" fill="var(--ink-muted)">swap for Teams/email later</text>
+
+      <!-- Node 10: Respond -->
+      <rect x="20" y="400" width="520" height="80" rx="8" fill="var(--surface-2)" stroke="var(--accent-line)" stroke-width="1.6" />
+      <text x="280" y="435" text-anchor="middle" font-size="13" font-weight="600" class="mono" fill="var(--ink)">Respond to Webhook</text>
+      <text x="280" y="453" text-anchor="middle" font-size="11" class="mono" fill="var(--ink-muted)">200 JSON, with or without the warning, back to whoever called it</text>
+    </svg>
+  </figure>
+  <figcaption style="margin-top:-28px;">Two colors carry the whole argument: <strong style="color:var(--llm)">amber</strong> is the one step that needs language understanding; <strong style="color:var(--rules)">blue</strong> is a plain Python <code class="mono">if</code>-statement. Everything left neutral is routing or data — n8n, FastAPI's boundary, the JSON contract — none of it makes a judgment call.</figcaption>
+
+  <div class="callout">
+    <div class="bar"></div>
+    <div class="body">
+      <span class="rule-title">The one rule the whole architecture follows</span>
+      <p>Use the <strong class="llm-word">LLM</strong> only where a sentence has to be read and interpreted — what was decided, who's named, which discipline. The moment a question has one correct answer regardless of phrasing — is <code class="mono">owner</code> null? is this date before today? — it becomes a <strong class="rules-word">deterministic</strong> check in <code class="mono">rules.py</code>: reproducible, unit-testable, and free to run.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <h2>Step-by-step reference</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Step</th><th>Type</th><th>What happens</th><th>Why here, not elsewhere</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="step">n8n Webhook</td>
+            <td><span class="badge orc">Orchestration</span></td>
+            <td>Receives the POST containing the protocol text.</td>
+            <td>Entry point — any real system (SharePoint, a form, a schedule) can call it.</td>
+          </tr>
+          <tr>
+            <td class="step">FastAPI</td>
+            <td><span class="badge orc">Orchestration</span></td>
+            <td>Validates the request, wires the rest of the pipeline together.</td>
+            <td>One typed REST contract in and out — n8n never needs to know Python.</td>
+          </tr>
+          <tr>
+            <td class="step">LLM Extraction</td>
+            <td><span class="badge llm">Semantic — LLM</span></td>
+            <td>Reads free text, extracts decisions, actions, owner, deadline, discipline.</td>
+            <td>The only step that actually requires understanding language.</td>
+          </tr>
+          <tr>
+            <td class="step">Pydantic Validate</td>
+            <td><span class="badge orc">Contract</span></td>
+            <td>Checks the LLM's JSON against the <code class="mono">LLMExtraction</code> schema; one controlled retry on failure.</td>
+            <td>Guarantees a fixed <em>shape</em> even though LLM <em>content</em> varies call to call.</td>
+          </tr>
+          <tr>
+            <td class="step">Rules Engine</td>
+            <td><span class="badge rules">Deterministic</span></td>
+            <td>Flags missing owner/deadline, overdue dates, unresolved dependencies, closed deliverables.</td>
+            <td>Every check has one right answer — asking an LLM would only add cost and variance.</td>
+          </tr>
+          <tr>
+            <td class="step">JSON Response</td>
+            <td><span class="badge orc">Orchestration</span></td>
+            <td>Returns <code class="mono">decisions</code>, <code class="mono">actions</code>, <code class="mono">issues</code>, <code class="mono">requires_attention</code>.</td>
+            <td>Same typed contract n8n started with — nothing implicit to parse.</td>
+          </tr>
+          <tr>
+            <td class="step">n8n: IF</td>
+            <td><span class="badge orc">Orchestration</span></td>
+            <td>Branches purely on the <code class="mono">requires_attention</code> boolean.</td>
+            <td>Routes a fact FastAPI already computed — decides nothing itself.</td>
+          </tr>
+          <tr>
+            <td class="step">Notify (Discord)</td>
+            <td><span class="badge orc">Orchestration</span></td>
+            <td>Posts the formatted warning to a channel when the branch is true.</td>
+            <td>Swapping this for Teams/email/a ticket is a node change, not a code change.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Status codes in play</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Code</th><th>Fires when</th><th>Body</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="code">200</td><td>Extraction and rule checks both completed.</td><td>Full <code class="mono">AnalyseResponse</code> JSON.</td></tr>
+          <tr><td class="code">400</td><td><code class="mono">text</code> is missing or blank.</td><td><code class="mono">{"detail": "..."}</code></td></tr>
+          <tr><td class="code">404</td><td>Unknown <code class="mono">deliverable_id</code> on <code class="mono">GET /deliverables/&#123;id&#125;</code>.</td><td><code class="mono">{"detail": "..."}</code></td></tr>
+          <tr><td class="code">502</td><td>LLM returns invalid JSON twice in a row (after the one retry).</td><td><code class="mono">{"detail": "..."}</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Say this out loud (≈2 min)</h2>
+    <div class="pitch">
+      <p>I wanted to understand the kind of practical AI automation used in EPCM, so I built a small adjacent use case rather than copying an existing prototype. My workflow analyses project meeting protocols and extracts decisions, actions, owners, deadlines and affected deliverables.</p>
+      <p>A meeting protocol enters through an n8n webhook, n8n calls a Python FastAPI service through REST, the LLM performs structured semantic extraction using Pydantic, deterministic Python rules identify things like missing owners or unresolved dependencies, and n8n handles the downstream warning workflow.</p>
+      <p>I also created a small evaluation dataset to test the structured extraction and issue detection.</p>
+    </div>
+  </section>
+
+</div>
