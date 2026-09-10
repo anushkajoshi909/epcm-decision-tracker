@@ -3,16 +3,13 @@
 A tiny, end-to-end prototype: **one meeting protocol → one automated
 structured result → one warning.**
 
-Built as interview preparation for an AI & Automation Engineer role in the
-EPCM/construction industry. It's deliberately adjacent to — not a copy of —
-the kinds of prototypes that team is known to work on (early project
-warning, document control, deliverable status checking). This one focuses on
-a different, common gap: **decisions and actions buried inside meeting
-protocols**, where a missing owner or a missed deadline on a cross-discipline
-dependency is easy to lose track of.
+A small portfolio project exploring practical AI automation for the
+EPCM/construction industry — specifically **decisions and actions buried
+inside meeting protocols**, where a missing owner or a missed deadline on a
+cross-discipline dependency is easy to lose track of.
 
-All data in `data/` is synthetic. No real Drees & Sommer information is used
-anywhere in this repository.
+All data in `data/` is synthetic. No real client or project information is
+used anywhere in this repository.
 
 **[pipeline-blueprint.html](pipeline-blueprint.html)** is a single-file,
 color-coded diagram of the full pipeline (open it directly in any browser,
@@ -221,8 +218,7 @@ the prototype was actually tested, not just demoed once by hand.
 
 **Why n8n for orchestration, not just Python glue code?**
 Because the orchestration here is genuinely a workflow with branching and a
-notification step — exactly what n8n is for — and it's also the tool this
-role expects hands-on familiarity with. A shell script or a Python `if`
+notification step — exactly what n8n is for. A shell script or a Python `if`
 statement could do the same routing, but wouldn't demonstrate webhook/REST
 orchestration skills. n8n is also how this would realistically plug into
 enterprise systems (Teams, email, SharePoint) later without touching the
@@ -307,18 +303,3 @@ LLM output, and deterministic business rules.
 
 No A2A, no multi-agent architecture, unless a genuine second specialist
 role shows up that can't be handled by one extraction call plus rules.
-
----
-
-## 11. Two-minute pitch
-
-> I wanted to understand the kind of practical AI automation used in EPCM,
-> so I built a small adjacent use case rather than copying an existing
-> prototype. My workflow analyses project meeting protocols and extracts
-> decisions, actions, owners, deadlines and affected deliverables. A meeting
-> protocol enters through an n8n webhook, n8n calls a Python FastAPI service
-> through REST, the LLM performs structured semantic extraction using
-> Pydantic, deterministic Python rules identify things like missing owners
-> or unresolved dependencies, and n8n handles the downstream warning
-> workflow. I also created a small evaluation dataset to test the
-> structured extraction and issue detection.

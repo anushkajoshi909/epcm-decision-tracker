@@ -1,0 +1,96 @@
+
+=== Per-case results ===
+
+TC01_clean_case: 8/8 fields correct
+  [OK      ] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [OK      ] unresolved_dependency
+  [OK      ] requires_attention
+
+TC02_missing_owner: 8/8 fields correct
+  [OK      ] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [OK      ] unresolved_dependency
+  [OK      ] requires_attention
+
+TC03_missing_deadline: 8/8 fields correct
+  [OK      ] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [OK      ] unresolved_dependency
+  [OK      ] requires_attention
+
+TC04_deadline_already_passed: 6/8 fields correct
+  [MISMATCH] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [MISMATCH] unresolved_dependency
+  [OK      ] requires_attention
+
+TC05_unresolved_dependency: 8/8 fields correct
+  [OK      ] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [OK      ] unresolved_dependency
+  [OK      ] requires_attention
+
+TC06_unknown_deliverable: 7/8 fields correct
+  [OK      ] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [MISMATCH] unresolved_dependency
+  [OK      ] requires_attention
+
+TC07_multi_discipline_decision: 8/8 fields correct
+  [OK      ] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [OK      ] unresolved_dependency
+  [OK      ] requires_attention
+
+TC08_closed_deliverable_reopened: 7/8 fields correct
+  [MISMATCH] decision_detected
+  [OK      ] action_detected
+  [OK      ] owner
+  [OK      ] deadline
+  [OK      ] affected_deliverable
+  [OK      ] missing_owner
+  [OK      ] unresolved_dependency
+  [OK      ] requires_attention
+
+=== Aggregate accuracy per field ===
+  decision_detected      75%  (6/8)
+  action_detected        100%  (8/8)
+  owner                  100%  (8/8)
+  deadline               100%  (8/8)
+  affected_deliverable   100%  (8/8)
+  missing_owner          100%  (8/8)
+  unresolved_dependency  75%  (6/8)
+  requires_attention     100%  (8/8)
+
+=== requires_attention as binary classifier ===
+  TP=6 FP=0 FN=0 TN=2
+  precision=100%  recall=100%

@@ -80,7 +80,7 @@
     "id": "TC06_unknown_deliverable",
     "project_id": "PROJECT_ALPHA",
     "text": "Peter Braun will update drawing package MEP-99 by 2026-09-30 following the coordination clash review.",
-    "registry_note": "MEP-99 does NOT exist in data/deliverables.csv, so the registry fallback finds nothing -> owner comes purely from the text ('Peter Braun'), and separately triggers an 'unknown_deliverable' issue (not checked by this eval script).",
+    "registry_note": "MEP-99 does NOT exist in data/deliverables.csv, so the registry fallback finds nothing -> owner comes purely from the text ('Peter Braun'). Separately triggers an 'unknown_deliverable' issue at MEDIUM severity, which is what makes requires_attention=true correct here -> nothing else about this case (owner present, deadline present and future, no dependencies) would otherwise raise a medium/high issue.",
     "expected": {
       "decision_detected": false,
       "action_detected": true,

@@ -32,7 +32,12 @@ def check_issues(
         )
 
         # An owner already on record for the deliverable counts as "assigned"
-        # even if the protocol text itself didn't name anyone.
+        # even if the protocol text itself didn't name anyone. Simplification:
+        # the deliverable's owner isn't necessarily the owner of this specific
+        # action (e.g. someone else on that package could be doing this task) -
+        # acceptable for the MVP, but a production version would surface the
+        # deliverable owner as a suggested contact rather than silently
+        # assigning them the action.
         effective_owner = action.owner or (deliverable.owner if deliverable else None)
 
         if not effective_owner:
@@ -75,6 +80,10 @@ def check_issues(
                     )
                 )
 
+        # Simplification: any extracted dependency is treated as unresolved.
+        # The LLM currently has no way to say "this dependency is already
+        # satisfied" - a production version would extract a status per
+        # dependency (or instruct the LLM to only report unresolved ones).
         if action.dependencies:
             issues.append(
                 Issue(
@@ -91,7 +100,7 @@ def check_issues(
             issues.append(
                 Issue(
                     type="unknown_deliverable",
-                    severity=LOW,
+                    severity=MEDIUM,
                     message=(
                         f"Affected deliverable '{action.affected_deliverable}' was "
                         "not found in the deliverables register"

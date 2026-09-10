@@ -194,26 +194,6 @@
   .badge.rules { background: var(--rules-tint); color: var(--rules); }
   .badge.orc { background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line); }
 
-  .pitch {
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 28px 30px;
-    position: relative;
-  }
-  .pitch::before {
-    content: "\201C";
-    position: absolute;
-    top: 6px;
-    left: 18px;
-    font-family: Georgia, serif;
-    font-size: 64px;
-    color: var(--line);
-    line-height: 1;
-  }
-  .pitch p { margin: 0 0 14px 0; font-size: 16.5px; position: relative; z-index: 1; }
-  .pitch p:last-child { margin-bottom: 0; }
-
   @media (prefers-reduced-motion: no-preference) {
     header.hero { animation: rise 0.4s ease-out; }
   }
@@ -226,7 +206,7 @@
 <div class="page">
 
   <header class="hero">
-    <span class="eyebrow">Architecture Reference — Interview Walkthrough</span>
+    <span class="eyebrow">Architecture Reference</span>
     <h1>Meeting Protocol → Warning</h1>
     <p class="subtitle">The full request path through the EPCM Decision &amp; Interface Action Tracker, drawn so the boundary between <strong>LLM interpretation</strong> and <strong>deterministic Python</strong> is the first thing a reader sees — not a detail buried in prose.</p>
   </header>
@@ -429,15 +409,6 @@
           <tr><td class="code">502</td><td>LLM returns invalid JSON twice in a row (after the one retry).</td><td><code class="mono">{"detail": "..."}</code></td></tr>
         </tbody>
       </table>
-    </div>
-  </section>
-
-  <section class="block">
-    <h2>Say this out loud (≈2 min)</h2>
-    <div class="pitch">
-      <p>I wanted to understand the kind of practical AI automation used in EPCM, so I built a small adjacent use case rather than copying an existing prototype. My workflow analyses project meeting protocols and extracts decisions, actions, owners, deadlines and affected deliverables.</p>
-      <p>A meeting protocol enters through an n8n webhook, n8n calls a Python FastAPI service through REST, the LLM performs structured semantic extraction using Pydantic, deterministic Python rules identify things like missing owners or unresolved dependencies, and n8n handles the downstream warning workflow.</p>
-      <p>I also created a small evaluation dataset to test the structured extraction and issue detection.</p>
     </div>
   </section>
 
